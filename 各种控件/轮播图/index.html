@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>轮播图</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.rotate {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.rotate>a {
+			display: none;
+			position: absolute;
+			top: 50%;
+			margin-top: -26px;
+			width: 25px;
+			height: 52px;
+			background: rgba(0, 0, 0, .3);
+			color: rgba(255, 255, 255, .5);
+			font-size: 24px;
+			text-align: center;
+			line-height: 52px;
+			text-decoration: none;
+			z-index: 10;
+		}
+
+		.rotate>a:hover {
+			color: rgba(255, 255, 255, .8);
+		}
+
+		.rotate .roll-l {
+			left: 0;
+			border-radius: 0 4px 4px 0;
+		}
+
+		.rotate .roll-r {
+			right: 0;
+			border-radius: 4px 0 0 4px;
+		}
+
+		.rotate ul,
+		.rotate ol {
+			list-style: none;
+		}
+
+		.rotate ul {
+			position: absolute;
+		}
+
+		.rotate ul li {
+			float: left;
+		}
+
+		.rotate ol {
+			position: absolute;
+			left: 50%;
+			bottom: 2%;
+			transform: translateX(-50%);
+		}
+
+		.rotate ol li {
+			float: left;
+			width: 12px;
+			height: 12px;
+			margin: 1px;
+			border: 2px solid rgba(0, 0, 0, .4);
+			background: rgba(255, 255, 255, .4);
+			border-radius: 50%;
+			cursor: pointer;
+		}
+
+		.rotate ol .current {
+			border-color: rgba(255, 255, 255, .3);
+			background: rgba(0, 0, 0, .5);
+		}
+	</style>
+</head>
+
+<body>
+	<div style="width: 960px;margin: 50px auto;">
+		<!-- 轮播图主体 -->
+		<style>
+			/* 设置轮播图大小 */
+			.rotate,
+			.rotate img {
+				width: 960px;
+				height: 545px;
+			}
+		</style>
+		<div class="rotate">
+			<!-- 上一张 -->
+			<a href="javascript:;" class="roll-l">&lt;</a>
+			<!-- 下一张 -->
+			<a href="javascript:;" class="roll-r">&gt;</a>
+			<!-- 核心滚动区 -->
+			<ul>
+				<!-- 这里更换图片 -->
+				<li><a href="#"><img src="./01.jpg" alt=""></a></li>
+				<li><a href="#"><img src="./02.jpg" alt=""></a></li>
+				<li><a href="#"><img src="./03.jpg" alt=""></a></li>
+				<li><a href="#"><img src="./04.jpg" alt=""></a></li>
+				<li><a href="#"><img src="./05.png" alt=""></a></li>
+				<li><a href="#"><img src="./06.jpg" alt=""></a></li>
+			</ul>
+			<!-- 循环按钮 -->
+			<ol></ol>
+		</div>
+	</div>
+	<script>
+		; (function () {
+			var rotate = document.querySelector('.rotate')
+			var ul = rotate.querySelector('ul')
+			var ol = rotate.querySelector('ol')
+
+			ul.style.width = (ul.children.length + 1) * 100 + '%'
+			// 1. 动态生成下方小圆点
+			for (let i = 0; i < ul.children.length; i++) {
+				// 创建 li 小圆点
+				var li = document.createElement('li')
+				// 设置索引号
+				li.setAttribute('index', i)
+				ol.appendChild(li)
+				// 下方小圆点 点击事件
+				li.addEventListener('click', function () {
+					for (let i = 0; i < ol.children.length; i++) {
+						ol.children[i].className = ''
+						this.className = 'current'
+						var index = this.getAttribute('index')
+						if (num == ul.children.length - 1) {
+							ul.style.left = 0
+							num = 0
+						}
+						animate(ul, - index * rotate.offsetWidth)
+						num = index
+					}
+				})
+			}
+
+			// 设置第一张图片的小圆点为 current
+			ol.children[0].className = 'current'
+
+			// 克隆第一张图片放到最后面
+			var first = ul.children[0].cloneNode(true)
+			ul.appendChild(first)
+
+			var roll_l = document.querySelector('.roll-l')
+			var roll_r = document.querySelector('.roll-r')
+			var timer = null
+
+			// 鼠标移入和移出，显示和隐藏左右两边按钮
+			rotate.addEventListener('mouseenter', function () {
+				roll_r.style.display = 'block'
+				roll_l.style.display = 'block'
+				// 鼠标进入清除自动播放定时器
+				clearInterval(timer)
+			})
+
+			rotate.addEventListener('mouseleave', function () {
+				roll_l.style.display = 'none'
+				roll_r.style.display = 'none'
+				// 鼠标离开调用自动播放
+				autoPlay()
+			})
+
+			// 右侧按钮
+			var num = 0 // 全局索引号
+			var flag = true // flag 节流阀,阻止连续点击导致播放过快
+
+			var play = roll_r.addEventListener('click', function () {
+				if (flag) {
+					flag = false    // 关闭节流阀
+					// 如果当前是最后一张图片（复制来的那张），快速走到第一张图片
+					if (num == ul.children.length - 1) {
+						ul.style.left = 0
+						num = 0
+					}
+					num++
+					animate(ul, -num * rotate.offsetWidth, function () {
+						flag = true    // 打开节流阀
+					})
+					// 当前小圆点的索引号 = num 整除 小圆点的个数
+					// 一轮后，由于num++ 第一张图的小圆点会变成最后一张图片的小圆点
+					setCurrent(num % (ul.children.length - 1), ol)
+				}
+			})
+
+			// 左侧按钮
+			roll_l.addEventListener('click', function () {
+				if (flag) {
+					flag = false
+					// 如果当前是第一张，快速走到最后那一张复制来的图片
+					if (num == 0) {
+						num = ul.children.length - 1
+						ul.style.left = -num * rotate.offsetWidth + 'px'
+					}
+					num--
+					animate(ul, -num * rotate.offsetWidth, function () {
+						flag = true
+					})
+					setCurrent(num, ol)
+				}
+			})
+
+			// 动画效果
+			function animate(obj, target, callback) {
+				clearInterval(obj.timer)
+				obj.timer = setInterval(function () {
+					var step = (target - obj.offsetLeft) / 10
+					step = step < 0 ? Math.floor(step) : Math.ceil(step)
+					if (obj.offsetLeft == target) {
+						clearInterval(obj.timer)
+						// if (callback) {
+						//     callback()
+						// }
+						callback && callback()
+					}
+					obj.style.left = obj.offsetLeft + step + 'px'
+				}, 15)
+			}
+
+			// 设置 current 小圆点
+			function setCurrent(index, obj) {
+				// 排他
+				for (let i = 0; i < obj.children.length; i++) {
+					obj.children[i].className = ''
+				}
+				// 上位
+				obj.children[index].className = 'current'
+			}
+
+			// 自动播放
+			autoPlay()
+			function autoPlay() {
+				timer = setInterval(function () {
+					// 调用右侧按钮点击事件
+					roll_r.click()
+				}, 4000)
+			}
+		})()
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>撞壁反弹</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      background: url(./bg.jpg) no-repeat fixed 50% 0;
+      background-size: cover;
+    }
+
+    .sprite-bulin {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 130px;
+      height: 134px;
+      background: url(./sprite-bulin.png) no-repeat;
+      animation-name: bulinfly;
+      animation-duration: 0.5s;
+      animation-fill-mode: forwards;
+      animation-iteration-count: infinite;
+      animation-timing-function: steps(7);
+      transition: left 0.05s, top 0.05s;
+    }
+
+    @keyframes bulinfly {
+      100% {
+        background-position-x: -910px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sprite-bulin"></div>
+  <script>
+    var bulinfly = document.querySelector('.sprite-bulin')  // 要移动的对象
+    var wall = document.body || document.documentElement  // 墙壁 必须要有宽度和高度
+    var stepX = 8  // x轴 移动频率
+    var stepY = 8 // y轴 移动频率
+    var turnX = true // x轴 要顺走了
+    var turnY = true // y轴 要顺走了
+    // 动画函数
+    // wallRebound(要移动的对象, 墙壁, x轴移动频率, y轴移动频率)
+    function wallRebound(obj, wall, stepX, stepY) {
+      clearInterval(obj.timer)
+      var moveX = stepX
+      var moveY = stepY
+      obj.timer = setInterval(function () {
+        // 1. x轴 方向：
+        // 如果 移动的对象 要越过右侧的墙 转身 倒着走
+        // 如果 移动的对象 要越过左侧的墙 再转身 瞬着走
+        if (obj.offsetLeft >= wall.offsetWidth - obj.offsetWidth) {
+          obj.style.transform = 'rotateY(0)'
+          turnX = false  // 要倒走了
+        } else if (obj.offsetLeft <= wall.offsetLeft) {
+          obj.style.transform = 'rotateY(180deg)'
+          turnX = true // 要顺走了
+        }
+        if (turnX) {
+          moveX = stepX
+        } else {
+          moveX = - stepX
+        }
+        // 2. y轴 方向：
+        // 如果 移动的对象 要越过下方的墙 倒着走
+        // 如果 移动的对象 要越过上方的墙 瞬着走
+        if (obj.offsetTop >= wall.offsetHeight - obj.offsetHeight) {
+          turnY = false // 要倒走了
+        } else if (obj.offsetTop <= wall.offsetTop) {
+          turnY = true  // 要瞬走了
+        }
+        // alert(turnY)
+        if (turnY) {
+          moveY = stepY
+        } else {
+          moveY = -stepY
+        }
+        obj.style.left = obj.offsetLeft + moveX + 'px'
+        obj.style.top = obj.offsetTop + moveY + 'px'
+      }, 35)
+    }
+
+    wallRebound(bulinfly, wall, stepX, stepY)
+    // 监听浏览器窗口缩放
+    window.addEventListener('resize', function () {
+      wallRebound(bulinfly, wall, stepX, stepY)
+    })
+  </script>
+</body>
+
+</html>
