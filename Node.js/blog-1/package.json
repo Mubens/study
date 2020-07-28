@@ -1,0 +1,24 @@
+{
+  "name": "blog-1",
+  "version": "1.0.0",
+  "description": "this is a small blog server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=dev PORT=8000 nodemon ./bin/www.js",
+    "prd": "cross-env NODE_ENV=production PORT=8000 nodemon ./bin/www.js"
+  },
+  "keywords": [
+    "blog"
+  ],
+  "author": "fenggeniubi",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.18.1",
+    "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "nodemon": "^2.0.4"
+  }
+}
