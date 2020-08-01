@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>封装</title>
+  </head>
+  <body>
+    <script>
+      ;(() => {
+        const catA = {
+          name: 'xiaoA',
+          eat() {
+            console.log('xiaoA eats something')
+          }
+        }
+        const catB = {
+          name: 'xiaoB',
+          eat() {
+            console.log('xiaoB eats something')
+          }
+        }
+        const catC = {
+          name: 'xiaoC',
+          eat() {
+            console.log('xiaoC eats something')
+          }
+        }
+      })()
+      ;(() => {
+        // 封装
+        // 方法1：使用工厂模式
+        function createCat(name) {
+          const obj = {}
+          obj.name = name
+          obj.eat = function () {
+            console.log(name + ' eats something')
+          }
+          return obj
+        }
+        const catA = createCat('xiaoA')
+        const catB = createCat('xiaoB')
+        const catC = createCat('xiaoC')
+      })()
+      ;(() => {
+        // 方法2：使用面向对象
+        function Cat(name) {
+          this.name = name
+          this.eat = function () {
+            console.log(this.name + ' eats something')
+          }
+        }
+        const catA = new Cat('xiaoA')
+        const catB = new Cat('xiaoB')
+        const catC = new Cat('xiaoC')
+      })()
+    </script>
+  </body>
+</html>

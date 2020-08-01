@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>new</title>
+  </head>
+  <body>
+    <script>
+      function Cat(name, age) {
+        this.name = name
+        this.age = age
+      }
+
+      const catA = new Cat('white', 1)
+      console.log(catA)
+
+      /*
+      new 做了哪些事
+       1. 创建了一个新的空对象
+       2. 将构造函数的 prototype 属性赋值给新对象的 __proto__ 属性
+       3. 将构造函数的 this 指向新对象
+       4. 执行构造函数的代码
+       5. 将新对象返回
+    */
+      const catB = (function (...args) {
+        const obj = {}
+        obj.__proto__ = Cat.prototype
+        Cat.apply(obj, args)
+        return obj
+      })('black', 1)
+      console.log(catB)
+    </script>
+  </body>
+</html>

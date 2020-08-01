@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>call apply bind</title>
+  </head>
+  <body>
+    <script>
+      // call apply bind 用来动态改变this指向
+
+      function fn(name, age) {
+        console.log(this)
+        this.name = name
+        this.age = age
+      }
+      const obj = {
+        b: fn,
+        c: {}
+      }
+
+      // fn() // window
+      // obj.b() // obj
+
+      // fn.call(obj) // obj
+      // obj.b.apply(window) // window
+      // fn.bind(obj.c)() // obj.c
+
+      // fn.call(obj, 'ldh', 18)
+      // console.log(name, age)  // ldh 18
+
+      // obj.b.apply(window, ['zxy', 19])
+      // console.log(window.name, window.age) // zxy 19
+
+      // fn.bind(obj.c, 'zjl', 20)()
+      // console.log(obj.c.name, obj.c.age)  // zjl 20
+    </script>
+  </body>
+</html>
