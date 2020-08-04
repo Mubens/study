@@ -1,0 +1,41 @@
+.test {
+  width: 100px;
+  height: 100px;
+}
+
+.test:nth-child(1) {
+  transform: translateX(50px);
+  background-color: skyblue;
+}
+
+.test:nth-child(2) {
+  background: url(../images/vue.png) no-repeat;
+  background-size: cover;
+}
+
+.test:nth-child(3) {
+  background: url(../images/react.png) no-repeat;
+  background-size: cover;
+}
+.wrapper {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  flex-wrap: wrap;
+  div {
+    width: 50%;
+    height: 100%;
+    &:nth-child(1) {
+      background-color: skyblue;
+    }
+    &:nth-child(2) {
+      background-color: tomato;
+    }
+    &:nth-child(3) {
+      background-color: pink;
+    }
+    &:nth-child(4) {
+      background-color: springgreen;
+    }
+  }
+}
