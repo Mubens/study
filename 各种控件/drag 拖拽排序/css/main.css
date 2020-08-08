@@ -1,0 +1,38 @@
+/* 初始 */
+#drag-items {
+  /* position: relative; */
+  display: flex;
+  flex-wrap: wrap;
+  width: 560px;
+}
+
+.drag-item {
+  /* position: relative; */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 12px;
+  background: #4fc08d;
+  color: #ffffff;
+}
+.dragging {
+  z-index: 99;
+}
+
+.back-anime {
+  animation: goback 0.3s linear forwards;
+}
+
+@keyframes goback {
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+/* 自定义 */
+#drag-items {
+  margin: 250px auto 0;
+}
