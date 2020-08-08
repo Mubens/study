@@ -2,8 +2,12 @@
 #drag-items {
   /* position: relative; */
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  width: 560px;
+  width: 226px;
+  height: 448px;
 }
 
 .drag-item {
