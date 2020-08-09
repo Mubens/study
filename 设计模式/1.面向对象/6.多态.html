@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 多态：表示不同对象采用相同方法会产生不同结果
+
+    function Base () {}
+    Base.prototype.initial = function () {
+      this.init()
+    }
+    function SubA () {
+      this.init = function () {
+        console.log('subA init')
+      }
+    }
+
+    function SubB () {
+      this.init = function () {
+        console.log('subB init')
+      }
+    }
+
+    SubA.prototype = new Base()
+    SubB.prototype = new Base()
+
+    const subA = new SubA()
+    const subB = new SubB()
+
+    subA.initial()
+    subB.initial()
+  </script>
+</body>
+</html>
