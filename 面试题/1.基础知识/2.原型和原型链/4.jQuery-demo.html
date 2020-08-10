@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p>1</p>
+    <p>2</p>
+    <p>3</p>
+    <script>
+      class JQuery {
+        constructor(selecotr) {
+          const result = document.querySelectorAll(selecotr)
+          const length = result.length
+          for (let i = 0; i < length; i++) {
+            this[i] = result[i]
+          }
+          this.length = length
+          this.selector = selecotr
+        }
+        get(index) {
+          return this[index]
+        }
+        each(fn) {
+          for (let i = 0; i < this.length; i++) {
+            const ele = this[i]
+            fn(ele)
+          }
+        }
+        on(type, fn) {
+          return this.each((ele) => {
+            ele.addEventListener(type, fn, false)
+          })
+        }
+      }
+
+      // 插件
+      jQuery.prototype.dialog = function (info) {
+        alert(info)
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      Function.prototype.myBind = function () {
+        // 将参数拆解为数组
+        const args = Array.prototype.slice.call(arguments)
+
+        // 获取 this
+        const _this = args.shift()
+
+        // 获取执行函数
+        const fn = this
+
+        // 返回新的函数
+        return function () {
+          return fn.apply(_this, args)
+        }
+      }
+
+      function test(a, b, c) {
+        console.log(this)
+        console.log(a, b, c)
+        return 'this is a fn'
+      }
+      const fn = test.myBind({ x: 1 }, 10, 20, 30)
+      const res = fn()
+      console.log(res)
+    </script>
+  </body>
+</html>
