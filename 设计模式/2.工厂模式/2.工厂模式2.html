@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+    // 
+    function Person (name) {
+      this.name = name
+    }
+    Person.prototype.getName = function () {
+      console.log(this.name)
+    }
+
+    function Car (model) {
+      this.model = model
+    }
+    Car.prototype.getModel = function () {
+      console.log(this.model)
+    }
+
+    function create (type, param) {
+      // return new this[type](param)
+      if (this instanceof create) {
+        return new this[type](param)
+      } else {
+        return new create (type, param)
+      }
+    }
+    create.prototype = {
+      person: Person,
+      car: Car
+    }
+
+    const person = new create('person', 'zxy')
+    const car = create('car', 'Baoma')
+
+    console.log(person)
+
+    /*
+      new create('person', 'zxy') -> {
+        __proto__: create.prototype -> {
+          person: Person,
+          car: Car
+        }
+      }
+      person = new this['person']('zxy') = new Person('zxy') -> {
+        __proto__: Person.prototype,
+        name: 'zxy'
+      }
+
+    */
+  </script>
+</body>
+</html>
