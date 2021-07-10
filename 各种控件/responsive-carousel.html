@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>响应式轮播图 - 原生 js 面向过程</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #eee;
+    }
+
+    #root {
+      width: 40%;
+      margin: 0 auto;
+    }
+
+    .section {
+      width: 100%;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* object-position: center; */
+    }
+
+
+    .cal {
+      transition-property: transform;
+      transition-timing-function: ease-out;
+    }
+
+    .proportional-outer-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .proportional-inner-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel {
+      position: relative;
+      top: 0;
+      left: 0;
+      background-color: skyblue;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+    }
+
+    .carousel-block {
+      flex: 1;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+
+    .carousel-switch {
+      opacity: 0;
+      transition: opacity .1s;
+    }
+
+    .carousel:hover .carousel-switch {
+      opacity: 1;
+    }
+
+    .carousel-switch-btn {
+      width: 40px;
+      font-size: 20px;
+      color: #ffffff;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .carousel-pre {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(170, 170, 170, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+    }
+
+    .carousel-next {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(170, 170, 170, 0.8) 100%);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="section">
+      <div class="proportional-outer-box" style="padding-bottom: 100%;">
+        <div class="proportional-inner-box">
+          <div id="carousel" class="carousel">
+            <div id="carousel-track" class="carousel-track">
+              <div class="carousel-block">
+                <img src="./images/1.webp" alt="">
+              </div>
+              <div class="carousel-block">
+                <img src="./images/2.webp" alt="">
+              </div>
+              <div class="carousel-block">
+                <img src="./images/3.webp" alt="">
+              </div>
+              <div class="carousel-block">
+                <img src="./images/1.webp" alt="">
+              </div>
+            </div>
+            <div class="carousel-dots"></div>
+            <div class="carousel-switch">
+              <button class="carousel-switch-btn carousel-pre">&lt;</button>
+              <button class="carousel-switch-btn carousel-next">&gt;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script>
+    const carousel = document.querySelector("#carousel");
+    const track = document.querySelector("#carousel-track");
+
+    const count = [...track.children].length;
+
+    track.style.width = `${100 * count}%`
+
+    const prev = document.querySelector('.carousel-pre');
+    const next = document.querySelector('.carousel-next');
+
+    let cur = 0;
+    let animating = false;
+    let tduration = 300;
+    let step = 4000;
+
+    let loop = true;
+
+    const playPrevAnimate = () => {
+      if (animating) {
+        return;
+      }
+      animating = true
+      if (cur === 0) {
+        cur = count - 1;
+        track.style.transitionDuration = '0s';
+        track.style.transform = `translate3d(${- cur * (100 / count)}%, 0, 0)`;
+      }
+      setTimeout(() => {
+        track.style.transitionDuration = `${tduration / 1000}s`;
+        track.style.transform = `translate3d(${- --cur * (100 / count)}%, 0, 0)`;
+      })
+      setTimeout(() => {
+        animating = false;
+      }, tduration);
+    };
+
+    const playNextAnimate = () => {
+      if (animating) {
+        return;
+      }
+      animating = true
+      if (cur === count - 1) {
+        cur = 0;
+        track.style.transitionDuration = '0s';
+        track.style.transform = `translate3d(${- 0}%, 0, 0)`;
+      }
+      setTimeout(() => {
+        track.style.transitionDuration = `${tduration / 1000}s`;
+        track.style.transform = `translate3d(${- ++cur * (100 / count)}%, 0, 0)`;
+      });
+      setTimeout(() => {
+        animating = false;
+      }, tduration);
+    };
+
+    let timer;
+
+    const stopLoopAnimate = () => {
+      if (loop) {
+        clearInterval(timer);
+      }
+    }
+
+    const startLoopAnimte = () => {
+      timer = setInterval(() => {
+        playNextAnimate();
+      }, step);
+    }
+
+    if (loop) {
+      startLoopAnimte();
+    }
+
+    carousel.addEventListener('mouseover', stopLoopAnimate)
+    carousel.addEventListener('mouseleave', startLoopAnimte)
+
+    prev.addEventListener('click', playPrevAnimate);
+    next.addEventListener('click', playNextAnimate);
+  </script>
+</body>
+
+</html>
